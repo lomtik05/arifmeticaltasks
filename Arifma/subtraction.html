@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вычитание - Мини-игра</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('1.jfif'); /* Укажите путь к вашему изображению */
+            background-size: cover; /* Подгоняет изображение по размеру экрана */
+            background-position: center; /* Центрирует изображение */
+            text-align: center;
+            padding: 50px;
+            color: #FFFFFF;
+        }
+
+        #question {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
+        #answer {
+            padding: 10px;
+            font-size: 18px;
+        }
+
+        #submit {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4db6e1;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        #score {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        #back {
+            margin-top: 30px;
+            display: inline-block;
+            background-color: #f44336;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        #back:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Мини-игра: Вычитание</h1>
+    <div id="timer">Осталось времени: <span id="time">30</span> секунд</div>
+    <div id="question"></div>
+    <input type="number" id="answer" placeholder="Введите ответ" />
+    <button id="submit">Ответить</button>
+    <div id="score">Правильные ответы: <span id="correct">0</span></div>
+    <div id="results">Игра окончена!
+<p>Правильные ответы: 
+<span id="finalCorrect"></span><p> 
+<p>Неправильные ответы: 
+<span id="finalIncorrect"></span><p>
+</div>
+
+    <a id="back" href="index.html">Назад к меню</a>
+
+    <script>
+        let correctAnswers = 0;
+        let totalQuestions = 0;
+        let timer;
+        let timeRemaining = 30;
+
+        const startGame = () => {
+            timeRemaining = 30;
+            correctAnswers = 0;
+            totalQuestions = 0;
+            document.getElementById('correct').innerText = correctAnswers;
+            document.getElementById('results').style.display = 'none';
+            generateQuestion();
+            startTimer();
+        };
+
+        const generateQuestion = () => {
+            const num1 = Math.floor(Math.random() * 10);
+            const num2 = Math.floor(Math.random() * 10);
+            const question = `${num1} - ${num2}`;
+            document.getElementById('question').innerText = question;
+
+            return num1 - num2;
+        };
+
+        let currentAnswer = generateQuestion();
+
+        document.getElementById('submit').onclick = () => {
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            totalQuestions++;
+
+            if (userAnswer === currentAnswer) {
+                correctAnswers++;
+                document.getElementById('correct').innerText = correctAnswers;
+            }
+            document.getElementById('answer').value = '';
+            currentAnswer = generateQuestion();
+  
+            if (totalQuestions >= 10 || timeRemaining <= 0) {
+                endGame();
+            }
+        };
+
+        const startTimer = () => {
+            timer = setInterval(() => {
+                timeRemaining--;
+                document.getElementById('time').innerText = timeRemaining;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    endGame();
+                }
+            }, 1000);
+        };
+
+        const endGame = () => {
+            clearInterval(timer);
+            document.getElementById('question').innerText = '';
+
+            document.getElementById('answer').style.display = 'none';
+            document.getElementById('submit').style.display = 'none';
+            document.getElementById('score').style.display = 'none';
+
+            const incorrectAnswers = totalQuestions - correctAnswers;
+            document.getElementById('finalCorrect').innerText = correctAnswers;
+            document.getElementById('finalIncorrect').innerText = incorrectAnswers;
+            document.getElementById('results').style.display = 'block';
+        };
+
+        // Начать игру при загрузке страницы
+        startGame();
+
+    </script>
+
+</body>
